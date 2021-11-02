@@ -1,30 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoleType } from 'src/app/models/enums/RoleType';
 import { Product } from 'src/app/models/Product';
 import { User } from 'src/app/models/User';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { ProductService } from 'src/app/services/product.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, OnDestroy {
 
   public roleType = RoleType;
-
-  public user: User;
-  public addNewProductButtonEnabled: boolean = true;
-  public products: Array<Product> = [];
+  public depositSubscription: Subscription;
   public productsSubscription: Subscription;
 
-  constructor(private _productService: ProductService, private _authService: AuthenticationService) { }
+  public user: User;
+  public products: Array<Product> = [];
+  public purchaseInProgress: boolean = false;
+  public disableDepositButton: boolean = false;
+  public addNewProductButtonEnabled: boolean = true;
+  public depositCoins: number = 0;
+  public currentDeposit: number = 0;
+
+  constructor(private _productService: ProductService, private _authService: AuthenticationService, private _userService: UserService) { 
+    
+  }
+  ngOnDestroy(): void {
+    this.depositSubscription?.unsubscribe();
+    this.productsSubscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.user = this._authService.getLoggedUser();
-
+    
     if (!!this.user && this.user.role == RoleType.Seller) {
       this._productService.loadSellerProducts().subscribe();
       this.productsSubscription = this._productService.productsChanged.subscribe((products: Array<Product>) => {
@@ -35,6 +47,17 @@ export class ProductsComponent implements OnInit {
       this._productService.loadAllProducts().subscribe();
       this.productsSubscription = this._productService.productsChanged.subscribe((products: Array<Product>) => {
         this.products = products;
+
+        if(!!this.user && this.user.role == RoleType.Buyer){
+          this._userService.getDeposit().subscribe((deposit: number) =>{
+            this.currentDeposit = deposit;
+          });
+
+          this.depositSubscription = this._userService.depositChanged.subscribe((deposit: number)=>{
+            this.currentDeposit = deposit;
+          });
+
+        }
       })
     }
   }
@@ -43,7 +66,37 @@ export class ProductsComponent implements OnInit {
     return el.id;
   }
 
-  public OnDelete(productId: number) {
+  public onDelete(productId: number) {
     this._productService.deleteProduct(productId);
+  }
+
+  public onAddDeposit(){
+    this.disableDepositButton = true;
+    this._userService.deposit(this.depositCoins).subscribe(() => {
+      this.depositCoins = 0;
+      this.disableDepositButton = false;
+    })
+  }
+
+  public onPurchase(product){
+    console.log(product);
+    return;
+
+    // this.purchaseInProgress = true;
+    // this._userService.purchase(productId).subscribe(response => {
+    //   this.purchaseInProgress = false;
+
+    //   if(!!response){
+    //     // on success, load all products and deposit to make sure that we have latest version
+    //     this._productService.loadAllProducts().subscribe();
+    //     this._userService.getDeposit().subscribe((deposit: number) =>{
+    //       this.currentDeposit = deposit;
+    //     });
+    //   }
+    //   else{
+    //     // if there is failure, it is possible that someone has "altered" UI, reload
+    //     window.location.reload();
+    //   }
+    // })
   }
 }

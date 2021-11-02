@@ -9,7 +9,7 @@ import { LoginMemberRequest } from "src/app/models/api/Request/LoginMemberReques
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { User } from "src/app/models/User";
 import { RoleType } from "src/app/models/enums/RoleType";
-import { JitEmitterVisitor } from "@angular/compiler/src/output/output_jit";
+import { UserService } from "../user.service";
 
 
 @Injectable({ providedIn: 'root' })
@@ -19,7 +19,7 @@ export class AuthenticationService {
     public redirectUrl: string;
     public logedUserChanged: Subject<User> = new Subject<User>();
 
-    constructor(private _http: HttpClient, private _router: Router, private _jwtHelper: JwtHelperService) {
+    constructor(private _http: HttpClient, private _router: Router, private _jwtHelper: JwtHelperService, private _user: UserService) {
     }
 
     /**
@@ -38,6 +38,7 @@ export class AuthenticationService {
                         this.logedUserChanged.next(this.logedUser);
 
                         localStorage.setItem("user", JSON.stringify(this.logedUser));
+                        this._user.initiateDeposit(this.logedUser.deposit);
                         this._router.navigate(["/"]);
                     };
                 })

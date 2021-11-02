@@ -16,6 +16,7 @@ import { ProductComponent } from './components/products/product/product.componen
 import { ProductService } from './services/product.service';
 import { AuthInterceptorService } from './services/authentication/authentication-interceptor.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
+import { UserService } from './services/user.service';
 
 export function tokenGetter() {
   let jsonUser = localStorage.getItem("user")

@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { Observable, Subject } from "rxjs";
 import { map, tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
@@ -22,7 +21,15 @@ export class ProductService {
         (
             map
                 (
-                    products => { return products.data }
+                    products => { 
+                        let mappedProducts: Array<Product> = [];
+                        for(let i = 0; i < products.data.length; i++){
+                            mappedProducts.push(new Product(products.data[i].id,products.data[i].name, products.data[i].sellerId, products.data[i].amount,
+                                products.data[i].cost, products.data[i].cost))
+                        }
+
+                        return mappedProducts;
+                    }
                 ),
             tap
                 (

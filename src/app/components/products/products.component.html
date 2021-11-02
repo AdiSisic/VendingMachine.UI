@@ -22,7 +22,7 @@
                     <td routerLink='/product/{{product.id}}' style="cursor: pointer;">{{product.amount}}</td>
                     <td routerLink='/product/{{product.id}}' style="cursor: pointer;">{{product.cost}}</td>
                     <td>
-                        <button class="btn btn-danger" (click)="OnDelete(product.id)">Delete</button>
+                        <button class="btn btn-danger" (click)="onDelete(product.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -33,9 +33,22 @@
 <div *ngIf="!user || user.role == roleType.Buyer">
     <div class="row">
         <div class="col-xs-12" *ngIf="!!user && user.role == roleType.Buyer">
-            <h3>Current deposit: {{user.deposit}}</h3>
-            <a class="btn btn-primary">Add Deposit</a>
+            <h3>Current deposit: {{currentDeposit}}</h3>
+            <div style="display: -webkit-inline-box;">
+                <select name="cost" class="form-control" [(ngModel)]="depositCoins">
+                    <option value="5">5 Coins</option>
+                    <option value="10">10 Coins</option>
+                    <option value="20">20 Coins</option>
+                    <option value="50">50 Coins</option>
+                    <option value="100">100 Coins</option>
+                </select>
+
+                <button class="btn btn-primary" style="margin-left: 10px;" [disabled]="disableDepositButton" (click)="onAddDeposit()">Add Deposit</button>
+
+                <div>
             <hr>
+        </div>
+        </div>
         </div>
         <div class="row">
             <table class="table table-striped">
@@ -45,6 +58,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Cost</th>
+                        <th scope="col" *ngIf="!!user && user.role == roleType.Buyer">Buy</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,8 +67,13 @@
                         <td>{{product.name}}</td>
                         <td>{{product.amount}}</td>
                         <td>{{product.cost}}</td>
-                        <td>
-                            <button [disabled]="!user || (!!user && (user.role != roleType.Buyer || user.deposit < product.cost))" class="btn btn-primary">Buy</button>
+                        <td *ngIf="!!user && user.role == roleType.Buyer" style="display: flex;">
+                            <input type="number" max="{{product.amount}}" min="0" style="width:45%"  [(ngModel)]="product.itemsToBuy" value="{{product.itemsToBuy}}"/>
+                            <button 
+                            [disabled]="currentDeposit < product.cost || purchaseInProgress" 
+                            class="btn btn-success"
+                            (click)="onPurchase(product)"
+                            style="width:45%; margin-left: 10px;">Buy</button>
                         </td>
                     </tr>
                 </tbody>

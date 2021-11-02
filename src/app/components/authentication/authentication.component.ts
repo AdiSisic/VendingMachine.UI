@@ -21,12 +21,7 @@ export class AuthenticationComponent implements OnInit {
   ngOnInit(): void {
     let user = this._authenticationService.getLoggedUser();
     if(!!user){
-      if(user.role == RoleType.Buyer){
-        this._router.navigate(['/purchase']);
-      }
-      else{
         this._router.navigate(['/products'])
-      }
     }
   }
 
@@ -53,7 +48,7 @@ export class AuthenticationComponent implements OnInit {
     else {
       this._authenticationService.register(new CreateMemberRequest(form.value.username, form.value.password, form.value.role)).subscribe(response => {
         if(!!response){
-          this.isLoginMode = false;
+          this.isLoginMode = true;
         }
       });
     }
