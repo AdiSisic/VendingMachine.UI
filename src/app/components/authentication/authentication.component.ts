@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { LoginMemberRequest } from 'src/app/models/api/Request/LoginMemberRequest';
 import { CreateMemberRequest } from 'src/app/models/api/Request/CreateMemberRequest';
-import { AuthenticationService } from '../../services/auth/auth.service';
 import { RoleType } from 'src/app/models/enums/RoleType';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: 'app-authentication',

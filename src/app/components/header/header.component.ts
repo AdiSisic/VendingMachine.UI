@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoleType } from 'src/app/models/enums/RoleType';
 import { User } from 'src/app/models/User';
-import { AuthenticationService } from 'src/app/services/auth/auth.service';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 
 @Component({
   selector: 'app-header',

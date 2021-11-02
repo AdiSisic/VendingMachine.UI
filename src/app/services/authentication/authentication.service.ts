@@ -9,6 +9,7 @@ import { LoginMemberRequest } from "src/app/models/api/Request/LoginMemberReques
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { User } from "src/app/models/User";
 import { RoleType } from "src/app/models/enums/RoleType";
+import { JitEmitterVisitor } from "@angular/compiler/src/output/output_jit";
 
 
 @Injectable({ providedIn: 'root' })
@@ -66,13 +67,7 @@ export class AuthenticationService {
      */
     public logout(navigate: boolean = false) {
         localStorage.removeItem("user");
-
-        if (!!navigate) {
-            this._router.navigate(['/'])
-                .then(() => {
-                    window.location.reload();
-                });
-        }
+        window.location.reload();
     }
 
     public getLoggedUser(): User {
@@ -83,8 +78,11 @@ export class AuthenticationService {
             }
         }
 
-        if (!!this.logedUser && !!this._jwtHelper.isTokenExpired(this.logedUser.token)) {
-            this.logout();
+        if (!!this.logedUser) {
+            let jwtExpired = this._jwtHelper.isTokenExpired(this.logedUser.token);
+            if(!!jwtExpired){
+                this.logout();
+            }
         }
 
         return this.logedUser;

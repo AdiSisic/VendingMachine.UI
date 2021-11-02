@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscriber, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { RoleType } from 'src/app/models/enums/RoleType';
 import { Product } from 'src/app/models/Product';
-import { AuthenticationService } from 'src/app/services/auth/auth.service';
+import { User } from 'src/app/models/User';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
@@ -12,6 +13,9 @@ import { ProductService } from 'src/app/services/product.service';
 })
 export class ProductsComponent implements OnInit {
 
+  public roleType = RoleType;
+
+  public user: User;
   public addNewProductButtonEnabled: boolean = true;
   public products: Array<Product> = [];
   public productsSubscription: Subscription;
@@ -19,13 +23,19 @@ export class ProductsComponent implements OnInit {
   constructor(private _productService: ProductService, private _authService: AuthenticationService) { }
 
   ngOnInit(): void {
-    let user = this._authService.getLoggedUser();
+    this.user = this._authService.getLoggedUser();
 
-    if (user.role == RoleType.Seller) {
-     this._productService.loadSellerProducts().subscribe();
+    if (!!this.user && this.user.role == RoleType.Seller) {
+      this._productService.loadSellerProducts().subscribe();
       this.productsSubscription = this._productService.productsChanged.subscribe((products: Array<Product>) => {
         this.products = products;
       });
+    }
+    else {
+      this._productService.loadAllProducts().subscribe();
+      this.productsSubscription = this._productService.productsChanged.subscribe((products: Array<Product>) => {
+        this.products = products;
+      })
     }
   }
 
@@ -33,7 +43,7 @@ export class ProductsComponent implements OnInit {
     return el.id;
   }
 
-  public OnDelete(productId: number){
+  public OnDelete(productId: number) {
     this._productService.deleteProduct(productId);
   }
 }

@@ -1,10 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <div class="navbar-header" *ngIf="!!user">
-            <a class="navbar-brand" routerLink='/products' *ngIf="user.role == roleType.Seller">Products</a>
-
-            <a class="navbar-brand" routerLink='/purchase' *ngIf="user.role == roleType.Buyer">Purchase</a>
-            <a class="navbar-brand" routerLink='/deposit' *ngIf="user.role == roleType.Buyer">Deposit</a>
+        <div class="navbar-header">
+            <a class="navbar-brand" routerLink='/products'>Products</a>
         </div>
     </div>
   

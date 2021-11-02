@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="!!user && user.role == roleType.Seller">
     <div class="col-xs-12">
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
             <div class="row">
@@ -39,7 +39,9 @@
                     </div>
                 </div>
             </div>
-
         </form>
     </div>
+</div>
+<div class="row" *ngIf="!!user && user.role == roleType.Buyer">
+    
 </div>
