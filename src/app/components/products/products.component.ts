@@ -20,9 +20,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   public user: User;
   public products: Array<Product> = [];
+  
   public purchaseInProgress: boolean = false;
   public disableDepositButton: boolean = false;
+  public disableDepositResetButton: boolean = false;
   public addNewProductButtonEnabled: boolean = true;
+
   public depositCoins: number = 0;
   public currentDeposit: number = 0;
 
@@ -78,25 +81,37 @@ export class ProductsComponent implements OnInit, OnDestroy {
     })
   }
 
-  public onPurchase(product){
-    console.log(product);
-    return;
+  public onResetDeposit(){
+    this.disableDepositResetButton = true;
 
-    // this.purchaseInProgress = true;
-    // this._userService.purchase(productId).subscribe(response => {
-    //   this.purchaseInProgress = false;
+    this._userService.resetDeposit().subscribe(response =>{
+      this.disableDepositResetButton = false;
+    })
+  }
 
-    //   if(!!response){
-    //     // on success, load all products and deposit to make sure that we have latest version
-    //     this._productService.loadAllProducts().subscribe();
-    //     this._userService.getDeposit().subscribe((deposit: number) =>{
-    //       this.currentDeposit = deposit;
-    //     });
-    //   }
-    //   else{
-    //     // if there is failure, it is possible that someone has "altered" UI, reload
-    //     window.location.reload();
-    //   }
-    // })
+  public onPurchase(product: Product){
+    let totalCost = product.count * product.cost;
+    
+    if(totalCost > this.currentDeposit){
+      alert('to expensive');
+      return;
+    }
+
+    this.purchaseInProgress = true;
+    this._userService.purchase(product.id, product.count).subscribe(response => {
+      this.purchaseInProgress = false;
+
+      if(!!response){
+        // on success, load all products and deposit to make sure that we have latest version
+        this._productService.loadAllProducts().subscribe();
+        this._userService.getDeposit().subscribe((deposit: number) =>{
+          this.currentDeposit = deposit;
+        });
+      }
+      else{
+        // if there is failure, it is possible that someone has "altered" UI, reload
+        window.location.reload();
+      }
+    })
   }
 }

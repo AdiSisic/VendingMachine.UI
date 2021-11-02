@@ -32,10 +32,11 @@
 
 <div *ngIf="!user || user.role == roleType.Buyer">
     <div class="row">
-        <div class="col-xs-12" *ngIf="!!user && user.role == roleType.Buyer">
-            <h3>Current deposit: {{currentDeposit}}</h3>
-            <div style="display: -webkit-inline-box;">
-                <select name="cost" class="form-control" [(ngModel)]="depositCoins">
+        <div class="col-xs-12" *ngIf="!!user && user.role == roleType.Buyer"
+            style="margin-top:30px; margin-bottom:30px;">
+            <p style="font-size: large;">Current deposit: {{currentDeposit}} coins<p>
+            <div style="display: inline-flex; width:100%">
+                <select name="cost" style="width:100%" [(ngModel)]="depositCoins">
                     <option value="5">5 Coins</option>
                     <option value="10">10 Coins</option>
                     <option value="20">20 Coins</option>
@@ -43,12 +44,15 @@
                     <option value="100">100 Coins</option>
                 </select>
 
-                <button class="btn btn-primary" style="margin-left: 10px;" [disabled]="disableDepositButton" (click)="onAddDeposit()">Add Deposit</button>
-
+                <button class="btn btn-primary" [disabled]="disableDepositButton" style="margin-left:10px; width: 100%;" (click)="onAddDeposit()">
+                    Add Deposit
+                </button>
+                <button class="btn btn-danger" [disabled]="disableDepositResetButton" style="margin-left:10px; width: 100%" (click)="onResetDeposit()">
+                    Reset Deposit
+                </button>
                 <div>
-            <hr>
-        </div>
-        </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <table class="table table-striped">
@@ -68,12 +72,12 @@
                         <td>{{product.amount}}</td>
                         <td>{{product.cost}}</td>
                         <td *ngIf="!!user && user.role == roleType.Buyer" style="display: flex;">
-                            <input type="number" max="{{product.amount}}" min="0" style="width:45%"  [(ngModel)]="product.itemsToBuy" value="{{product.itemsToBuy}}"/>
-                            <button 
-                            [disabled]="currentDeposit < product.cost || purchaseInProgress" 
-                            class="btn btn-success"
-                            (click)="onPurchase(product)"
-                            style="width:45%; margin-left: 10px;">Buy</button>
+                            <input type="number" max="{{product.amount}}" min="0" style="width:45%"
+                                [(ngModel)]="product.count" value="{{product.count}}" />
+                            <button
+                                [disabled]="currentDeposit < product.cost || purchaseInProgress || ((product.count * product.cost) > currentDeposit) || product.count == 0"
+                                class="btn btn-success" (click)="onPurchase(product)"
+                                style="width:45%; margin-left: 10px;">Buy</button>
                         </td>
                     </tr>
                 </tbody>

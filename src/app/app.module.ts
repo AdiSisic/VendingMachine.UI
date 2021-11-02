@@ -13,10 +13,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { User } from './models/User';
 import { ProductsComponent } from './components/products/products.component';
 import { ProductComponent } from './components/products/product/product.component';
-import { ProductService } from './services/product.service';
 import { AuthInterceptorService } from './services/authentication/authentication-interceptor.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
-import { UserService } from './services/user.service';
 
 export function tokenGetter() {
   let jsonUser = localStorage.getItem("user")
@@ -47,8 +45,7 @@ export function tokenGetter() {
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },
-    AuthenticationGuardService,
-    ProductService
+    AuthenticationGuardService
   ],
   bootstrap: [AppComponent]
 })

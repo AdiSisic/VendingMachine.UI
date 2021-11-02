@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { LoginMemberRequest } from 'src/app/models/api/Request/LoginMemberRequest';
 import { CreateMemberRequest } from 'src/app/models/api/Request/CreateMemberRequest';
-import { RoleType } from 'src/app/models/enums/RoleType';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-authentication',
@@ -12,10 +12,10 @@ import { AuthenticationService } from 'src/app/services/authentication/authentic
   styleUrls: ['./authentication.component.css']
 })
 export class AuthenticationComponent implements OnInit {
-
   public isLoginMode: boolean = true;
-
-  constructor(private _authenticationService: AuthenticationService, private _router: Router) {
+  
+  constructor(private _authenticationService: AuthenticationService, 
+              private _router: Router) {
   }
 
   ngOnInit(): void {
@@ -43,7 +43,15 @@ export class AuthenticationComponent implements OnInit {
     }
 
     if (this.isLoginMode) {
-      this._authenticationService.login(new LoginMemberRequest(form.value.username, form.value.password)).subscribe();
+      this._authenticationService.login(new LoginMemberRequest(form.value.username, form.value.password)).subscribe
+      (
+        response => {
+          if(!!response.success){
+            this._router.navigate(["/"]);
+          }
+          console.log(response.message);
+        }
+      );
     }
     else {
       this._authenticationService.register(new CreateMemberRequest(form.value.username, form.value.password, form.value.role)).subscribe(response => {
@@ -53,5 +61,4 @@ export class AuthenticationComponent implements OnInit {
       });
     }
   }
-
 }

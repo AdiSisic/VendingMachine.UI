@@ -29,16 +29,11 @@
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="cost">Cost</label>
-                        <select name="cost" class="form-control" formControlName="cost">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                          </select>
+                        <input type="number" id="cost" class="form-control" formControlName="cost" min="0">
                     </div>
                 </div>
             </div>
+            
         </form>
     </div>
 </div>

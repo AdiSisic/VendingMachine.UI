@@ -39,7 +39,6 @@ export class AuthenticationService {
 
                         localStorage.setItem("user", JSON.stringify(this.logedUser));
                         this._user.initiateDeposit(this.logedUser.deposit);
-                        this._router.navigate(["/"]);
                     };
                 })
             );

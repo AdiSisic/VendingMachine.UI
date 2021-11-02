@@ -52,8 +52,26 @@ export class UserService {
         );
     }
 
-    public purchase(productId: number): Observable<boolean>{
-        return this._http.get<any>(`${environment.baseEndpoint}/User/purchase/${productId}`)
+    public resetDeposit():Observable<boolean>{
+        return this._http.get<any>(`${environment.baseEndpoint}/User/resetDeposit`, {})
+        .pipe
+        (
+            map
+            (
+                response =>{
+                    if(!!response.success){
+                        this.curentDeposit = 0;
+                        this.depositChanged.next(this.curentDeposit);
+                    }
+
+                    return response.success;
+                }
+            )
+        )
+    }
+
+    public purchase(productId: number, count: number): Observable<boolean>{
+        return this._http.get<any>(`${environment.baseEndpoint}/User/purchase/${productId}/${count}`)
         .pipe
         (
             map
