@@ -3,6 +3,8 @@ import { NgForm } from '@angular/forms';
 import { LoginMemberRequest } from 'src/app/models/api/Request/LoginMemberRequest';
 import { CreateMemberRequest } from 'src/app/models/api/Request/CreateMemberRequest';
 import { AuthenticationService } from '../../services/auth/auth.service';
+import { RoleType } from 'src/app/models/enums/RoleType';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authentication',
@@ -13,10 +15,19 @@ export class AuthenticationComponent implements OnInit {
 
   public isLoginMode: boolean = true;
 
-  constructor(private _authenticationService: AuthenticationService) {
+  constructor(private _authenticationService: AuthenticationService, private _router: Router) {
   }
 
   ngOnInit(): void {
+    let user = this._authenticationService.getLoggedUser();
+    if(!!user){
+      if(user.role == RoleType.Buyer){
+        this._router.navigate(['/purchase']);
+      }
+      else{
+        this._router.navigate(['/products'])
+      }
+    }
   }
 
   /**

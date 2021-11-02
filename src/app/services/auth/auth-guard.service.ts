@@ -1,24 +1,27 @@
 import { Injectable } from "@angular/core";
-import { CanActivate, Router } from "@angular/router";
-import { JwtHelperService } from "@auth0/angular-jwt";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { Observable } from "rxjs";
 import { AuthenticationService } from "./auth.service";
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
 
-    constructor(private _router: Router, private _jwtHelper: JwtHelperService, private _authenticationService: AuthenticationService) {
-    }
+    constructor(private _autService: AuthenticationService, private _router: Router) { }
 
-    canActivate() {
-        let user = this._authenticationService.getLoggedUser();
-        if(!!user)
-        {
-            this._router.navigate(["/"]);
-            return false;
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+        let user = this._autService.getLoggedUser();
+        if (!!user) {
+            return true;
         }
-        
-        return true;
-        // this._router.navigate(["/authentication"])
-        // return true;
+        else {
+            if (this._autService.redirectUrl == "authentication") {
+                return true;
+            }
+            else {
+                this._autService.redirectUrl = "authentication";
+                this._router.navigate(['/authentication']);
+                return false;
+            }
+        }
     }
 }

@@ -1,16 +1,18 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" routerLink='/' style="margin-right:15px;">Products</a>
-            <a class="navbar-brand" routerLink='/deposit' *ngIf="!!user && user.id > 0 && user.role == 'Buyer'">Deposit</a>
+        <div class="navbar-header" *ngIf="!!user">
+            <a class="navbar-brand" routerLink='/products' *ngIf="user.role == roleType.Seller">Products</a>
+
+            <a class="navbar-brand" routerLink='/purchase' *ngIf="user.role == roleType.Buyer">Purchase</a>
+            <a class="navbar-brand" routerLink='/deposit' *ngIf="user.role == roleType.Buyer">Deposit</a>
         </div>
     </div>
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="nav navbar-nav navbar-right">
         <li class="nav-item active navbar-brand">
-            <a class="nav-link" routerLink='/authentication' *ngIf="!user || user.id <= 0">Authenticate</a>
-            <a class="nav-link" *ngIf="!!user && user.id > 0" style="cursor: pointer;" (click)="logout()">Logout</a>
+            <a class="nav-link" routerLink='/authentication' *ngIf="!user">Authenticate</a>
+            <a class="nav-link" *ngIf="!!user" style="cursor: pointer;" (click)="logout()">Logout</a>
           </li>
       </ul>
      

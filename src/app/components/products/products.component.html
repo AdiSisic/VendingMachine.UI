@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-primary" routerLink='/product/new'>New Product</a>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products; let i = index; trackBy: trackByMethod">
+                <th scope="row">{{i + 1}}</th>
+                <td routerLink='/product/{{product.id}}' style="cursor: pointer;">{{product.name}}</td>
+                <td routerLink='/product/{{product.id}}' style="cursor: pointer;">{{product.amount}}</td>
+                <td routerLink='/product/{{product.id}}' style="cursor: pointer;">{{product.cost}}</td>
+                <td>
+                    <button class="btn btn-danger" (click)="OnDelete(product.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

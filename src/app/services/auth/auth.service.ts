@@ -8,13 +8,14 @@ import { CreateMemberRequest } from "src/app/models/api/Request/CreateMemberRequ
 import { LoginMemberRequest } from "src/app/models/api/Request/LoginMemberRequest";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { User } from "src/app/models/User";
-import { Role } from "src/app/models/enums/Role";
+import { RoleType } from "src/app/models/enums/RoleType";
 
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
 
-    private logedUser: User | undefined;
+    private logedUser: User;
+    public redirectUrl: string;
     public logedUserChanged: Subject<User> = new Subject<User>();
 
     constructor(private _http: HttpClient, private _router: Router, private _jwtHelper: JwtHelperService) {
@@ -32,7 +33,7 @@ export class AuthenticationService {
                 catchError(this.handleError),
                 tap(response => {
                     if (response.success) {
-                        this.logedUser = new User(response.data.id, response.data.username, response.data.deposit, Role[response.data.role], response.data.token);
+                        this.logedUser = new User(response.data.id, response.data.username, response.data.deposit, response.data.role as RoleType, response.data.token);
                         this.logedUserChanged.next(this.logedUser);
 
                         localStorage.setItem("user", JSON.stringify(this.logedUser));
@@ -74,7 +75,7 @@ export class AuthenticationService {
         }
     }
 
-    public getLoggedUser(): User | undefined {
+    public getLoggedUser(): User {
         if (!this.logedUser) {
             let jsonUser = localStorage.getItem("user");
             if (!!jsonUser) {

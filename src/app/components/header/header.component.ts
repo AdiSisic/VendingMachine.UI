@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { RoleType } from 'src/app/models/enums/RoleType';
 import { User } from 'src/app/models/User';
 import { AuthenticationService } from 'src/app/services/auth/auth.service';
 
@@ -9,9 +10,11 @@ import { AuthenticationService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  
+  public roleType = RoleType;
 
-  public user: User | undefined;
-  private userSubscription: Subscription|undefined;
+  public user: User;
+  private userSubscription: Subscription;
 
   constructor(private _authenticationService: AuthenticationService) {
     this.user = this._authenticationService.getLoggedUser(); 
