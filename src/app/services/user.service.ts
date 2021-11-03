@@ -52,7 +52,7 @@ export class UserService {
         );
     }
 
-    public resetDeposit():Observable<boolean>{
+    public resetDeposit():Observable<any>{
         return this._http.get<any>(`${environment.baseEndpoint}/User/resetDeposit`, {})
         .pipe
         (
@@ -64,22 +64,13 @@ export class UserService {
                         this.depositChanged.next(this.curentDeposit);
                     }
 
-                    return response.success;
+                    return response;
                 }
             )
         )
     }
 
-    public purchase(productId: number, count: number): Observable<boolean>{
+    public purchase(productId: number, count: number): Observable<any>{
         return this._http.get<any>(`${environment.baseEndpoint}/User/purchase/${productId}/${count}`)
-        .pipe
-        (
-            map
-            (
-                response =>{
-                    return response.success;
-                }
-            )
-        )
     }
 }

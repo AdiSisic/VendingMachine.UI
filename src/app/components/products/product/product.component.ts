@@ -5,6 +5,7 @@ import { RoleType } from 'src/app/models/enums/RoleType';
 import { User } from 'src/app/models/User';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { ProductService } from 'src/app/services/product.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product',
@@ -19,7 +20,11 @@ export class ProductComponent implements OnInit {
   public editMode = false;
   public productForm: FormGroup;
 
-  constructor(private _route: ActivatedRoute, private _router: Router, private _productService: ProductService, private _authService: AuthenticationService) { }
+  constructor(private _route: ActivatedRoute,
+    private _router: Router,
+    private _productService: ProductService,
+    private _authService: AuthenticationService,
+    private _toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.user = this._authService.getLoggedUser();
@@ -31,28 +36,43 @@ export class ProductComponent implements OnInit {
     })
   }
 
-  public onCancel(){
+  public onCancel() {
     this._router.navigate(['/']);
   }
 
-  public onSubmit(){
-    if(this.editMode){
-      this._productService.updateProduct(this.id, this.productForm.value).subscribe(() => {this._router.navigate(["/"])});
+  public onSubmit() {
+    if (this.editMode) {
+      this._productService.updateProduct(this.id, this.productForm.value).subscribe(
+        response => {
+          if (!response.success) {
+            this._toastr.error(response.message);
+          }
+          else {
+            this._router.navigate(["/"])
+          }
+        });
     }
-    else{
-      this._productService.addProduct(this.productForm.value).subscribe(() => {this._router.navigate(["/"])});
+    else {
+      this._productService.addProduct(this.productForm.value).subscribe(
+        response => {
+          if (!response.success) {
+            this._toastr.error(response.message);
+          }
+          else {
+            this._router.navigate(["/"])
+          }
+        });
     }
   }
 
   private initForm() {
-    let name:string = '';
-    let amount:number = 0;
-    let cost:number = 0;
+    let name: string = '';
+    let amount: number = 0;
+    let cost: number = 0;
 
     if (this.editMode) {
       let product = this._productService.getProduct(this.id);
-      if(!!product)
-      {
+      if (!!product) {
         name = product.name;
         amount = product.amount;
         cost = product.cost;

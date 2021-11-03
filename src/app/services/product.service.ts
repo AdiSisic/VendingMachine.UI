@@ -15,49 +15,49 @@ export class ProductService {
 
     }
 
-    public loadAllProducts(): Observable<Array<Product>> {
+    public loadAllProducts(): Observable<string> {
         return this._http.get<any>(`${environment.baseEndpoint}/Product/getProducts`)
         .pipe
         (
             map
-                (
-                    products => { 
+            (
+                products => { 
+                    if(!!products.success){
                         let mappedProducts: Array<Product> = [];
                         for(let i = 0; i < products.data.length; i++){
                             mappedProducts.push(new Product(products.data[i].id,products.data[i].name, products.data[i].sellerId, products.data[i].amount,
                                 products.data[i].cost, products.data[i].cost))
+                            }
+                            
+                            this.replaceProducts(mappedProducts)
                         }
 
-                        return mappedProducts;
-                    }
-                ),
-            tap
-                (
-                    products => { this.replaceProducts(products) }
-                )
+                        return products.message;
+                }
+            )
         );
     }
 
-    public loadSellerProducts(): Observable<Array<Product>> {
+    public loadSellerProducts(): Observable<string> {
         return this._http.get<any>(`${environment.baseEndpoint}/Product/getSellerProducts`)
         .pipe
         (
             map
-                (
-                    products => { 
+            (
+                products => { 
+                    if(!!products.success){
                         let mappedProducts: Array<Product> = [];
                         for(let i = 0; i < products.data.length; i++){
                             mappedProducts.push(new Product(products.data[i].id,products.data[i].name, products.data[i].sellerId, products.data[i].amount,
                                 products.data[i].cost, products.data[i].cost))
+                            }
+                            
+                            this.replaceProducts(mappedProducts)
                         }
 
-                        return mappedProducts;
-                     }
-                ),
-            tap
-                (
-                    products => { this.replaceProducts(products) }
-                )
+                        return products.message;
+                }
+            )
         );
     }
 
@@ -83,13 +83,20 @@ export class ProductService {
         return this._http.put(`${environment.baseEndpoint}/Product/updateProduct/${productId}`, product);
     }
 
-    public deleteProduct(productId:number){
-        this._http.delete(`${environment.baseEndpoint}/Product/deleteProduct/${productId}`)
-        .subscribe(() => {
-            let index: number = this.products.findIndex((element) => element.id == productId);
-            this.products.splice(index, 1);
-            this.productsChanged.next(this.products.slice());
-            }
-        );
+    public deleteProduct(productId:number): Observable<any>{
+        return this._http.delete(`${environment.baseEndpoint}/Product/deleteProduct/${productId}`)
+        .pipe
+        (
+            tap
+            (
+                (response: any) => {
+                    if(!!response.success){
+                    let index: number = this.products.findIndex((element) => element.id == productId);
+                    this.products.splice(index, 1);
+                    this.productsChanged.next(this.products.slice());
+                    }
+                }
+            )
+        )
     }
 }

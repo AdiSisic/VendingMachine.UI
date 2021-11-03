@@ -49,15 +49,11 @@ export class AuthenticationService {
      * @param createMemberRequest - Request for creation of new Member
      * @returns Observable
      */
-    public register(createMemberRequest: CreateMemberRequest): Observable<boolean> {
+    public register(createMemberRequest: CreateMemberRequest): Observable<any> {
         return this._http.post<any>(`${environment.baseEndpoint}/Member/createMember`, createMemberRequest)
             .pipe
             (
-                catchError(this.handleError),
-                map
-                    (
-                        response => { return response.success }
-                    )
+                catchError(this.handleError)
             );
 
     }

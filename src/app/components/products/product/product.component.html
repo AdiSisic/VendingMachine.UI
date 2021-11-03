@@ -1,12 +1,7 @@
 <div class="row" *ngIf="!!user && user.role == roleType.Seller">
     <div class="col-xs-12">
         <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-            <div class="row">
-                <div class="col-xs-12">
-                    <button type="submit" class="btn btn-success" [disabled]="!productForm.valid">Save</button>
-                    <button type="button" class="btn btn-danger" (click)="onCancel()">Cancel</button>
-                </div>
-            </div>
+            
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-group">
@@ -33,7 +28,12 @@
                     </div>
                 </div>
             </div>
-            
+            <div class="row">
+                <div class="col-xs-12" style="margin-top:10px; float:right">
+                    <button type="button" class="btn btn-danger" (click)="onCancel()" style="width: 20%; float:right">Cancel</button>
+                    <button type="submit" class="btn btn-success" [disabled]="!productForm.valid" style="width: 20%; float:right">Save</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

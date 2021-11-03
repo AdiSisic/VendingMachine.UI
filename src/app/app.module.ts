@@ -15,6 +15,9 @@ import { ProductsComponent } from './components/products/products.component';
 import { ProductComponent } from './components/products/product/product.component';
 import { AuthInterceptorService } from './services/authentication/authentication-interceptor.service';
 import { AuthenticationGuardService } from './services/authentication/authentication-guard.service';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 export function tokenGetter() {
   let jsonUser = localStorage.getItem("user")
@@ -41,6 +44,8 @@ export function tokenGetter() {
     HttpClientModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     JwtModule.forRoot({ config: { tokenGetter: tokenGetter, allowedDomains: environment.allowedDomains, disallowedRoutes: [] } })
   ],
   providers: [
